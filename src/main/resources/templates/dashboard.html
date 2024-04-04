@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Dashboard</title>
+	<link rel="stylesheet" href="styles.css">
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: aliceblue;
+		}
+
+
+		.navbar {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			background-color: rgb(255, 255, 255);
+			color: #333;
+			padding: 15px 20px;
+			display: flex;
+			align-items: center;
+			/* Align items vertically */
+			justify-content: space-between;
+		}
+
+		.container {
+			display: flex;
+			margin-top: 60px;
+			/* Adjust margin-top to accommodate navbar height */
+		}
+
+
+		.navbar h1 {
+			margin: 0;
+		}
+
+		.navbar ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.navbar ul li {
+			display: inline;
+			margin-right: 60px;
+		}
+
+		.navbar ul li a {
+			color: rgb(0, 0, 0);
+			text-decoration: none;
+		}
+
+		.navbar ul li a.active {
+			font-weight: bold;
+		}
+
+		.sidebar {
+			position: fixed;
+			top: 60px;
+			/* Align sidebar with the bottom of the navbar */
+			left: 0;
+			width: 300px;
+			height: calc(100vh - 60px);
+			/* Set sidebar height to fill remaining viewport height */
+			background-color: #2c3e50;
+			display: flex;
+			flex-direction: column;
+		}
+
+
+		.sidebar ul {
+			list-style-type: none;
+			padding: 0;
+			flex-grow: 1;
+			/* Allow the list to expand to fill remaining space */
+		}
+
+		.sidebar ul li a {
+			color: #fff;
+			text-decoration: none;
+			display: block;
+			padding: 10px 0;
+			font-weight: bold;
+			padding: 20px;
+		}
+
+		.sidebar ul li a:hover {
+			background-color: rgb(18, 36, 41);
+		}
+
+		.sidebar ul li a.active {
+			font-weight: bold;
+		}
+
+		.main-content {
+			flex: 1;
+			padding: 20px;
+			margin-left: 300px;
+			/* Set left margin to match sidebar width */
+			margin-top: 60px;
+			/* Adjust margin-top to accommodate navbar height */
+		}
+
+		.main-content h2 {
+			color: #333;
+		}
+
+		.card {
+			background-color: #fff;
+			border-radius: 10px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			padding: 20px;
+			margin-bottom: 20px;
+		}
+
+		.card h3 {
+			margin-top: 0;
+		}
+
+		.card-content {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.card-content img {
+			max-width: 50px;
+		}
+
+		.card-content p {
+			margin: 0;
+			color: #555;
+		}
+
+		.card-content span {
+			color: #333;
+			font-weight: bold;
+		}
+	</style>
+</head>
+
+<body>
+	<nav class="navbar">
+		<h1>Inventory Dashboard</h1>
+		<ul>
+			<li><a href="#" class="active">Umesh Kumar</a></li>
+		</ul>
+	</nav>
+	<div class="container">
+		<div class="sidebar">
+			<ul>
+				<li><a href="#" th:href="@{/dashboard}" class="active">Overview</a></li>
+				<li><a href="#" th:href="@{/dashboard/item}">Item Master</a></li>
+				<li><a href="#" th:href="@{/dashboard/supplier}">Supplier</a></li>
+				<li><a href="#" th:href="@{/dashboard/purchase}">Purchase</a></li>
+				<li><a href="#" th:href="@{/dashboard/sale}">Sale</a></li>
+				<li><a href="#" th:href="@{/dashboard/reports}">Reports</a></li>
+				<li><a href="#" th:href="@{/dashboard/setting}">Settings</a></li>
+			</ul>
+		</div>
+
+		<div class="main-content">
+			<div class="card">
+				<h3>Product Inventory</h3>
+				<div class="card-content">
+					<img src="product-icon.png" alt="Product Icon">
+					<p>Total Products:</p>
+					<span>250</span>
+				</div>
+			</div>
+
+			<div class="card">
+				<h3>Order Status</h3>
+				<div class="card-content">
+					<img src="order-icon.png" alt="Order Icon">
+					<p>Pending Orders:</p>
+					<span>20</span>
+				</div>
+			</div>
+
+			<div class="card">
+				<h3>Customer Activity</h3>
+				<div class="card-content">
+					<img src="customer-icon.png" alt="Customer Icon">
+					<p>New Customers:</p>
+					<span>15</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

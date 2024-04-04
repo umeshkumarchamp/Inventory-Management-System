@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Dashboard</title>
+	<link rel="stylesheet" href="styles.css">
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: aliceblue;
+			color: #2c3e50;
+		}
+
+		.navbar {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			background-color: rgb(255, 255, 255);
+			color: #333;
+			padding: 15px 20px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.container {
+			display: flex;
+			margin-top: 60px;
+		}
+
+		.navbar h1 {
+			margin: 0;
+		}
+
+		.navbar ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.navbar ul li {
+			display: inline;
+			margin-right: 60px;
+		}
+
+		.navbar ul li a {
+			color: rgb(0, 0, 0);
+			text-decoration: none;
+		}
+
+		.navbar ul li a.active {
+			font-weight: bold;
+		}
+
+		.sidebar {
+			position: fixed;
+			top: 60px;
+			left: 0;
+			width: 300px;
+			height: calc(100vh - 60px);
+			background-color: #2c3e50;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.sidebar ul {
+			list-style-type: none;
+			padding: 0;
+			flex-grow: 1;
+		}
+
+		.sidebar ul li a {
+			color: #fff;
+			text-decoration: none;
+			display: block;
+			padding: 20px;
+			font-weight: bold;
+		}
+
+		.sidebar ul li a:hover {
+			background-color: rgb(18, 36, 41);
+		}
+
+		.sidebar ul li a.active {
+			font-weight: bold;
+		}
+
+		.main-content {
+			flex: 1;
+			padding: 20px;
+			margin-left: 300px;
+			margin-top: 90px;
+		}
+
+		.main-content {
+			
+			max-width: 900px;
+			margin: 100px auto 0 auto;
+			
+			padding: 20px;
+			background-color: #fff;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+
+		h1 {
+			color: #333;
+		}
+
+		h2 {
+			color: #555;
+		}
+
+		ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		li {
+			margin-bottom: 10px;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 20px;
+		}
+
+		th,
+		td {
+			border: 1px solid #ccc;
+			padding: 8px;
+			text-align: left;
+		}
+		
+		button {
+			padding: 10px 20px;
+			background-color: #007bff;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		button:hover {
+			background-color: #0056b3;
+		}
+	</style>
+</head>
+
+<body>
+	<nav class="navbar">
+		<h1> Dashboard</h1>
+		<ul>
+			<li><a href="#" class="active">Umesh Kumar</a></li>
+		</ul>
+	</nav>
+	<div class="container">
+		<div class="sidebar">
+			<ul>
+				<li><a href="#" th:href="@{/dashboard}" class="active">Overview</a></li>
+				<li><a href="#" th:href="@{/dashboard/item}">Item Master</a></li>
+				<li><a href="#" th:href="@{/dashboard/supplier}">Supplier</a></li>
+				<li><a href="#" th:href="@{/dashboard/purchase}">Purchase</a></li>
+				<li><a href="#" th:href="@{/dashboard/sale}">Sale</a></li>
+				<li><a href="#" th:href="@{/dashboard/reports}">Reports</a></li>
+				<li><a href="#" th:href="@{/dashboard/setting}">Settings</a></li>
+			</ul>
+		</div>
+
+
+		<div class="main-content">
+			<div>
+				<h2>Invoice Details</h2>
+				<ul>
+					<li><strong>Invoice No:</strong> <span th:text="${invoiceNo}"></span></li>
+					<li><strong>Date:</strong> <span th:text="${invoiceDate}"></span></li>
+					<li><strong>Supplier:</strong> <span th:text="${supplier}"></span></li>
+				</ul>
+			</div>
+			<div>
+				<h2>Item Details</h2>
+				<table>
+					<thead>
+						<tr>
+							<th>Item</th>
+							<th>Rate</th>
+							<th>Quantity</th>
+							<th>Amount</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Iterate over the list of items and generate table rows -->
+						<tr th:each="item : ${items}">
+							<td th:text="${item.item}">Item</td>
+							<td th:text="${item.rate}">Rate</td>
+							<td th:text="${item.quantity}">Quantity</td>
+							<td th:text="${item.amount}">Amount</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div>
+				<h2>Total Amount :</h2>
+				<p><span th:text="${totalAmount}"></span></p>
+			</div>
+			<button onclick="window.print()">Print</button>
+		</div>
+
+
+</body>
+
+</html>

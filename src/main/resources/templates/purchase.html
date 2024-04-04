@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Dashboard</title>
+	<link rel="stylesheet" href="styles.css">
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: aliceblue;
+		}
+
+		.navbar {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			background-color: rgb(255, 255, 255);
+			color: #333;
+			padding: 15px 20px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.container {
+			display: flex;
+			margin-top: 60px;
+		}
+
+		.navbar h1 {
+			margin: 0;
+		}
+
+		.navbar ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.navbar ul li {
+			display: inline;
+			margin-right: 60px;
+		}
+
+		.navbar ul li a {
+			color: rgb(0, 0, 0);
+			text-decoration: none;
+		}
+
+		.navbar ul li a.active {
+			font-weight: bold;
+		}
+
+		.sidebar {
+			position: fixed;
+			top: 60px;
+			left: 0;
+			width: 300px;
+			height: calc(100vh - 60px);
+			background-color: #2c3e50;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.sidebar ul {
+			list-style-type: none;
+			padding: 0;
+			flex-grow: 1;
+		}
+
+		.sidebar ul li a {
+			color: #fff;
+			text-decoration: none;
+			display: block;
+			padding: 20px;
+			font-weight: bold;
+		}
+
+		.sidebar ul li a:hover {
+			background-color: rgb(18, 36, 41);
+		}
+
+		.sidebar ul li a.active {
+			font-weight: bold;
+		}
+
+		/** Start Main-Content  */
+
+		.main-content {
+			flex: 1;
+			padding: 20px;
+			margin-left: 300px;
+			margin-top: 30px;
+		}
+
+		.main-content h1,
+		.main-content h2 {
+			color: #333;
+		}
+
+		/* Purchase Form Styles */
+
+		.purchase-form {
+			background-color: #f9f9f9;
+			border-radius: 10px;
+			padding: 30px;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+		}
+
+		.purchase-form h1 {
+			font-size: 24px;
+			margin-bottom: 20px;
+		}
+
+		.form-group {
+			margin-bottom: 20px;
+		}
+
+		label {
+			font-weight: bold;
+			display: block;
+			margin-bottom: 5px;
+		}
+
+		.form-group input[type="text"],
+		.form-group input[type="date"],
+		.form-group select {
+			width: 30%;
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			font-size: 16px;
+			margin-top: 5px;
+			margin-right: 10px;
+		}
+
+		.product-details {
+			display: flex;
+			align-items: center;
+		}
+
+		.product-info input {
+			margin-right: 10px;
+		}
+
+		.product-info>input[type="text"],
+		.product-info>input[type="number"],
+		.product-info>select {
+
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			font-size: 16px;
+			margin-top: 5px;
+			margin-right: 10px;
+			margin-bottom: 20px;
+		}
+
+
+
+		button {
+			padding: 10px 20px;
+			background-color: #007bff;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+		}
+
+		th,
+		td {
+			border: 1px solid #ddd;
+			padding: 10px;
+			text-align: left;
+		}
+
+		th {
+			background-color: #2c3e50;
+			color: #f9f9f9
+		}
+
+		.btn-submit {
+			background-color: #4caf50;
+		}
+
+		.total-section {
+			margin-top: 20px;
+		}
+
+		#grandTotal {
+			font-size: 18px;
+			font-weight: bold;
+			margin-top: 10px;
+		}
+
+		/** End Main-Content */
+	</style>
+</head>
+
+<body>
+	<nav class="navbar">
+		<h1>Inventory Dashboard</h1>
+		<ul>
+			<li><a href="#" class="active">Umesh Kumar</a></li>
+		</ul>
+	</nav>
+	<div class="container">
+		<div class="sidebar">
+			<ul>
+				<li><a href="#" th:href="@{/dashboard}" class="active">Overview</a></li>
+				<li><a href="#" th:href="@{/dashboard/item}">Item Master</a></li>
+				<li><a href="#" th:href="@{/dashboard/supplier}">Supplier</a></li>
+				<li><a href="#" th:href="@{/dashboard/purchase}">Purchase</a></li>
+				<li><a href="#" th:href="@{/dashboard/sale}">Sale</a></li>
+				<li><a href="#" th:href="@{/dashboard/reports}">Reports</a></li>
+				<li><a href="#" th:href="@{/dashboard/setting}">Settings</a></li>
+			</ul>
+		</div>
+		<div class="main-content">
+			<div class="purchase-form">
+				<h1>Purchase Form</h1>
+				<form action="/dashboard/savePurchase" method="post" th:object="${purchaseRequest}" id="purchaseForm"
+					onsubmit="handleSubmit(event)">
+					<div class="form-group">
+						<label for="invoiceNo">Invoice No:</label>
+						<input type="text" id="invoiceNo" name="purchaseMaster.invoiceNo" required>
+					</div>
+					<div class="form-group">
+						<label for="invoiceDate">Invoice Date:</label>
+						<input type="date" id="invoiceDate" name="purchaseMaster.date" required>
+					</div>
+					<div class="form-group">
+						<label for="supplier">Supplier:</label>
+						<select id="supplier" name="purchaseMaster.supplierId" required>
+							<option value="">Select Supplier</option>
+							<!-- Populate suppliers from model attribute -->
+							<option th:each="supplier : ${suppliers}" th:value="${supplier.id}"
+								th:text="${supplier.name}">
+							</option>
+						</select>
+					</div>
+					<h2>Product Details</h2>
+					<div class="product-details">
+						<div class="product-info">
+							<select id="productName">
+								<option value="">Select Product</option>
+								<!-- Populate items from model attribute -->
+								<option th:each="item : ${items}" th:value="${item.id}" th:text="${item.item}">
+								</option>
+							</select>
+							<input type="number" id="rate" placeholder="Rate">
+							<input type="number" id="quantity" placeholder="Quantity">
+							<button type="button" onclick="addProduct()">Add Product</button>
+						</div>
+					</div>
+					<div class="product-list" id="productList">
+						<h2>Product List</h2>
+						<table id="productTable">
+							<thead>
+								<tr>
+									<th>Product Name</th>
+									<th>Rate</th>
+									<th>Quantity</th>
+									<th>Total</th>
+								</tr>
+							</thead>
+							<tbody id="productListBody">
+								<!-- Product details will be dynamically added here -->
+							</tbody>
+						</table>
+						<div class="total-section">
+							<button type="button" onclick="calculateGrandTotal()">Calculate Grand Total</button>
+							<p id="grandTotal"></p>
+						</div>
+					</div>
+					<button type="submit" class="btn-submit">Save</button>
+				</form>
+			</div>
+		</div>
+
+		<script>
+			function addProduct() {
+				let productId = document.getElementById("productName").value;
+				let rate = parseFloat(document.getElementById("rate").value);
+				let quantity = parseInt(document.getElementById("quantity").value);
+				let total = rate * quantity;
+				let productName = document.getElementById("productName").options[document.getElementById("productName").selectedIndex].text;
+
+
+				// Create a product object
+				let product = {
+					item: productId,
+					rate: rate,
+					quantity: quantity,
+					total: total,
+					name: productName
+				};
+
+				// Retrieve existing products from sessionStorage or initialize an empty array
+				let existingProducts = JSON.parse(sessionStorage.getItem("addedProducts")) || [];
+
+				// Add the new product to the array
+				existingProducts.push(product);
+
+				// Store the updated products array in sessionStorage
+				sessionStorage.setItem("addedProducts", JSON.stringify(existingProducts));
+
+				// Update the product list displayed on the page
+				updateProductList();
+
+				// Clear input fields after adding the product
+				document.getElementById("rate").value = "";
+				document.getElementById("quantity").value = "";
+				document.getElementById("productName").value = "";
+
+				console.log(sessionStorage.getItem("addedProducts"));
+			}
+
+			// Function to update product list displayed on the page
+			function updateProductList() {
+				let productListBody = document.getElementById("productListBody");
+				productListBody.innerHTML = ""; // Clear previous list
+
+				// Retrieve added products from sessionStorage
+				let addedProducts = JSON.parse(sessionStorage.getItem("addedProducts")) || [];
+
+				// Iterate over the added products array and update the product list
+				addedProducts.forEach(function (product, index) {
+					let tableRow = document.createElement("tr");
+					tableRow.innerHTML = `
+		                <td>${product.name}</td>
+		                <td>${product.rate}</td>
+		                <td>${product.quantity}</td>
+		                <td>${product.total}</td>
+		            `;
+
+					// Set name attributes for each input element in the row
+					let hiddenInput1 = document.createElement("input");
+					hiddenInput1.type = "hidden";
+					hiddenInput1.name = `purchaseDetailsList[${index}].item`;
+					hiddenInput1.value = product.item;
+					tableRow.appendChild(hiddenInput1);
+
+					let hiddenInput2 = document.createElement("input");
+					hiddenInput2.type = "hidden";
+					hiddenInput2.name = `purchaseDetailsList[${index}].rate`;
+					hiddenInput2.value = product.rate;
+					tableRow.appendChild(hiddenInput2);
+
+					let hiddenInput3 = document.createElement("input");
+					hiddenInput3.type = "hidden";
+					hiddenInput3.name = `purchaseDetailsList[${index}].quantity`;
+					hiddenInput3.value = product.quantity;
+					tableRow.appendChild(hiddenInput3);
+
+					productListBody.appendChild(tableRow);
+				});
+
+				// Update the grand total
+				calculateGrandTotal();
+			}
+
+			// Function to calculate grand total
+			function calculateGrandTotal() {
+				let total = 0;
+				// Retrieve added products from sessionStorage
+				let addedProducts = JSON.parse(sessionStorage.getItem("addedProducts")) || [];
+				addedProducts.forEach(function (product) {
+					total += product.total;
+				});
+
+				// Display the grand total
+				document.getElementById("grandTotal").innerText = "Grand Total: " + total.toFixed(2);
+			}
+
+			// Call updateProductList function when the page loads to display any previously added products
+			window.onload = updateProductList;
+
+			function handleSubmit(event) {
+				event.preventDefault();
+
+				let form = document.getElementById("purchaseForm");
+				let formData = new FormData(form);
+
+				fetch(form.action, {
+					method: form.method,
+					body: formData
+				})
+					.then(response => {
+						if (response.ok) {
+							sessionStorage.removeItem("addedProducts");
+							console.log("Form submitted successfully!");
+							// Redirect to dashboard
+							window.location.href = "/dashboard";
+						} else {
+							console.error("Form submission failed!");
+						}
+					})
+					.catch(error => {
+						console.error("Error occurred while submitting the form:", error);
+					});
+			}
+
+		</script>
+
+
+
+</body>
+
+</html>
