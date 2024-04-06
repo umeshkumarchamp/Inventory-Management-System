@@ -9,6 +9,7 @@ public class SaleRequest {
 	public SaleMaster getSaleMaster() {
 		return saleMaster;
 	}
+	
 	public void setSaleMaster(SaleMaster saleMaster) {
 		this.saleMaster = saleMaster;
 	}
