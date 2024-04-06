@@ -25,11 +25,11 @@ public class SaleMaster {
 	@Column(name = "contact_no")
 	private Long contactNo; 
 	
-	@Column(name = "bill_no")
+	@Column(name = "bill_no", unique = true)
 	private String billNo;
 	
 	@Column(name = "bill_date")
-	private Date billDate;
+	private String billDate;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_at", nullable = false, updatable = false)
@@ -39,7 +39,7 @@ public class SaleMaster {
 	@Column(name = "updated_at", nullable = false)
 	private Date updatedAt;
 
-	public SaleMaster(Long id, String customerName, Long contactNo, String billNo, Date billDate, Date createdAt,
+	public SaleMaster(Long id, String customerName, Long contactNo, String billNo, String billDate, Date createdAt,
 			Date updatedAt) {
 		super();
 		this.id = id;
@@ -87,11 +87,11 @@ public class SaleMaster {
 		this.billNo = string;
 	}
 
-	public Date getBillDate() {
+	public String getBillDate() {
 		return billDate;
 	}
 
-	public void setBillDate(Date billDate) {
+	public void setBillDate(String billDate) {
 		this.billDate = billDate;
 	}
 

@@ -17,6 +17,10 @@ public class PurchaseMasterImpl implements PurchaseMasterService {
 
 	@Override
 	public PurchaseMaster addNewPurchaseMaster(PurchaseMaster pm) {
+		PurchaseMaster purchaseMaster = pmRepo.findByInvoiceNo(pm.getInvoiceNo());
+		if(purchaseMaster != null) {
+			return null;
+		}
 		return pmRepo.save(pm);
 	}
 
@@ -30,5 +34,16 @@ public class PurchaseMasterImpl implements PurchaseMasterService {
 		// TODO Auto-generated method stub
 		return pmRepo.findByInvoiceNo(invoiceNo);
 	}
+
+	@Override
+	public List<PurchaseMaster> getPurchaseMastersByDate(String data) {
+		// TODO Auto-generated method stub
+		return pmRepo.findByDate(data);
+	}
+	
+	@Override
+	public List<PurchaseMaster> findPurchasesBetweenDates(String fromDate, String toDate) {
+        return pmRepo.findByDateBetween(fromDate, toDate);
+    }
 
 }

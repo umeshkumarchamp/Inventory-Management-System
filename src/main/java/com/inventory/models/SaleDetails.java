@@ -22,10 +22,10 @@ public class SaleDetails {
 	@Column(name = "sale_master_id")
 	private Long saleMasterId; 
 	
-	@Column(name = "item_id")
+	@Column(name = "item")
 	private Long item; 
 	private Integer quantity; 
-	private Integer rate;
+	private Double rate;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_at", nullable = false, updatable = false)
@@ -35,7 +35,7 @@ public class SaleDetails {
 	@Column(name = "updated_at", nullable = false)
 	private Date updatedAt;
 
-	public SaleDetails(Long id, Long saleMasterId, Long item, Integer quantity, Integer rate, Date createdAt,
+	public SaleDetails(Long id, Long saleMasterId, Long item, Integer quantity, Double rate, Date createdAt,
 			Date updatedAt) {
 		super();
 		this.id = id;
@@ -83,11 +83,11 @@ public class SaleDetails {
 		this.quantity = quantity;
 	}
 
-	public Integer getRate() {
+	public Double getRate() {
 		return rate;
 	}
 
-	public void setRate(Integer rate) {
+	public void setRate(Double rate) {
 		this.rate = rate;
 	}
 

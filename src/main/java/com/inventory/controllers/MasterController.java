@@ -1,5 +1,6 @@
 package com.inventory.controllers;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -10,9 +11,11 @@ import java.util.UUID;
 import org.apache.catalina.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.inventory.models.Item;
@@ -60,6 +63,7 @@ public class MasterController {
 		System.out.println(purchaseMaster);
 
 		PurchaseMaster pm = pms.addNewPurchaseMaster(purchaseMaster);
+		if(pm == null) throw new RuntimeException("Invoice Number Already Existing !!!!");
 
 		List<PurchaseDetails> pdList = purchaseRequest.getPurchaseDetailsList();
 		System.out.println(pdList.size());
@@ -78,17 +82,6 @@ public class MasterController {
 		}
 		System.out.println("Records Added Successfully.");
 
-		// Retrieve addedProducts attribute from session
-//	    @SuppressWarnings("unchecked")
-//	    List<PurchaseDetailFormater> addedProducts = (List<PurchaseDetailFormater>) request.getSession().getAttribute("addedProducts");
-//	    if (addedProducts != null) {
-//	        System.out.println("Added products found in session: " + addedProducts.size());
-//	        for (PurchaseDetailFormater product : addedProducts) {
-//	            System.out.println(product);
-//	        }
-//	    } else {
-//	        System.out.println("No added products found in session");
-//	    }
 		return "redirect:/dashboard";
 	}
 
@@ -97,7 +90,9 @@ public class MasterController {
 
 		SaleMaster saleMaster = saleRequest.getSaleMaster();
 		Date currentDate = new Date();
-		saleMaster.setBillDate(currentDate);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = dateFormat.format(currentDate);
+		saleMaster.setBillDate(dateString);
 		saleMaster.setCreatedAt(currentDate);
 		saleMaster.setUpdatedAt(currentDate);
 		saleMaster.setBillNo(generateRandomBillNumber());
@@ -125,6 +120,18 @@ public class MasterController {
 	    int randomNumber = random.nextInt(90000000) + 10000000; // Generates a random number between 10000000 and 99999999
 	    return String.valueOf(randomNumber);
 	}
+	
+    @GetMapping("/dashboard/checkInvoiceNo")
+    public boolean checkInvoiceNo(@RequestParam("invoiceNo") Long invoiceNo) {
+        // Check if the invoice number exists in the database
+        PurchaseMaster pm = pms.getPurchaseMasterByInvoiceNo(invoiceNo);
+        if(pm!=null) {
+        	return true;
+        }else {
+        	return false;
+        }
+    }
+
 
 
 }

@@ -9,5 +9,9 @@ import com.inventory.models.PurchaseMaster;
 public interface PurchaseMasterRepository extends JpaRepository<PurchaseMaster, Long> {
 
     PurchaseMaster findByInvoiceNo(Long invoiceNo);
+    
+    List<PurchaseMaster> findByDate(String date);
+    
+    List<PurchaseMaster> findByDateBetween(String fromDate, String toDate);
 
 }

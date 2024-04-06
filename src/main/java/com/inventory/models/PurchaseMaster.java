@@ -26,8 +26,9 @@ public class PurchaseMaster {
 	@Column(name = "supplier_id")
 	private Long supplierId;
 	
-	@Column(name = "invoice_no")
+	@Column(name = "invoice_no", unique = true)
 	private Long invoiceNo;
+	
 	private String date;
 	
 	@Temporal(TemporalType.TIMESTAMP)

@@ -5,7 +5,6 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Dashboard</title>
-	<link rel="stylesheet" href="styles.css">
 	<style>
 		body {
 			font-family: Arial, sans-serif;
@@ -91,12 +90,58 @@
 		}
 
 		.sidebar ul li a:hover {
-			background-color: rgb(18, 36, 41);
+			background-color: #2980B9;
 		}
 
 		.sidebar ul li a.active {
 			font-weight: bold;
 		}
+
+		.dropdown {
+			position: relative;
+		}
+
+		.dropbtn {
+			color: #fff;
+			text-decoration: none;
+			display: block;
+			padding: 20px;
+			cursor: pointer;
+			font-weight: bold;
+		}
+
+		.dropbtn:hover,
+		.dropbtn:focus {
+			background-color: #2980B9;
+		}
+
+		.dropdown-content {
+			display: none;
+			position: absolute;
+			background-color: #34495e;
+			min-width: 300px;
+			z-index: 1;
+		}
+
+		.dropdown-content a {
+			color: #fff;
+			text-decoration: none;
+			display: block;
+			padding: 10px 20px;
+			font-weight: bold;
+			font-size: inherit;
+		}
+
+		.dropdown-content a:hover {
+			background-color: #2c3e50;
+		}
+
+		.show {
+			display: block;
+		}
+
+
+
 
 		.main-content {
 			flex: 1;
@@ -149,51 +194,82 @@
 	<nav class="navbar">
 		<h1>Inventory Dashboard</h1>
 		<ul>
-			<li><a href="#" class="active">Umesh Kumar</a></li>
+			<li><a href="#" class="active">Admin</a></li>
 		</ul>
 	</nav>
 	<div class="container">
 		<div class="sidebar">
 			<ul>
-				<li><a href="#" th:href="@{/dashboard}" class="active">Overview</a></li>
+				<li><a href="#" th:href="@{/dashboard}" class="active-dd">Overview</a></li>
 				<li><a href="#" th:href="@{/dashboard/item}">Item Master</a></li>
 				<li><a href="#" th:href="@{/dashboard/supplier}">Supplier</a></li>
 				<li><a href="#" th:href="@{/dashboard/purchase}">Purchase</a></li>
 				<li><a href="#" th:href="@{/dashboard/sale}">Sale</a></li>
-				<li><a href="#" th:href="@{/dashboard/reports}">Reports</a></li>
-				<li><a href="#" th:href="@{/dashboard/setting}">Settings</a></li>
+				<li class="dropdown">
+					<div class="dropbtn">Reports</div>
+					<div class="dropdown-content">
+						<a href="#" th:href="@{/dashboard/datewise-purchase-reports}">Purchase Reports</a>
+						<a href="#" th:href="@{/dashboard/datewise-sale-reports}">Sale Reports</a>
+						<a href="#" th:href="@{/dashboard/current-stock}">Current Stock</a>
+					</div>
+				</li>
+				<!-- <li><a href="#" th:href="@{/dashboard/setting}">Settings</a></li> -->
 			</ul>
 		</div>
 
 		<div class="main-content">
 			<div class="card">
-				<h3>Product Inventory</h3>
+				<h3>Purchase Report</h3>
 				<div class="card-content">
-					<img src="product-icon.png" alt="Product Icon">
-					<p>Total Products:</p>
-					<span>250</span>
+					<p>Total Purchase :</p>
+					<span th:text="${purchase_report}">250</span>
 				</div>
 			</div>
 
 			<div class="card">
-				<h3>Order Status</h3>
+				<h3>Sale Report</h3>
 				<div class="card-content">
-					<img src="order-icon.png" alt="Order Icon">
-					<p>Pending Orders:</p>
-					<span>20</span>
+					<p>Total Sale :</p>
+					<span th:text="${sale_report}">20</span>
 				</div>
 			</div>
 
 			<div class="card">
-				<h3>Customer Activity</h3>
+				<h3>Current Stock</h3>
 				<div class="card-content">
-					<img src="customer-icon.png" alt="Customer Icon">
-					<p>New Customers:</p>
+					<p>Totak Stock :</p>
 					<span>15</span>
 				</div>
 			</div>
 		</div>
 	</div>
+
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			var dropdowns = document.querySelectorAll(".dropdown");
+			dropdowns.forEach(function (dropdown) {
+				var dropbtn = dropdown.querySelector(".dropbtn");
+				var dropdownContent = dropdown.querySelector(".dropdown-content");
+				dropbtn.addEventListener("click", function () {
+					dropdownContent.classList.toggle("show");
+				});
+			});
+
+			window.addEventListener("click", function (event) {
+				dropdowns.forEach(function (dropdown) {
+					var dropbtn = dropdown.querySelector(".dropbtn");
+					var dropdownContent = dropdown.querySelector(".dropdown-content");
+					if (!dropdown.contains(event.target)) {
+						dropdownContent.classList.remove("show");
+					}
+				});
+			});
+		});
+
+	</script>
+
+
 </body>
 
 </html>

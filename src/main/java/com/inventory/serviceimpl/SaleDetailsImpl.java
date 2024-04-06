@@ -25,4 +25,14 @@ public class SaleDetailsImpl implements SaleDetailService{
 		return sdr.findAll();
 	}
 
+	@Override
+	public List<SaleDetails> getSaleDetailsBySaleMasterId(Long id) {
+		return sdr.findAllBySaleMasterId(id);
+	}
+
+	@Override
+	public List<SaleDetails> getSaleDetailsByItemId(Long itemId) {
+		return sdr.findAllByItem(itemId);
+	}
+
 }

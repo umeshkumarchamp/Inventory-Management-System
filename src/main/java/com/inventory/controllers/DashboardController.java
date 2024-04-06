@@ -32,7 +32,11 @@ public class DashboardController {
 	private SaleDetailService sds;
 
 	@GetMapping("/dashboard")
-	public String getDashboard() {
+	public String getDashboard(Model model) {
+		List<PurchaseDetails> plist = pds.getPurchaseList();
+		List<SaleDetails> slist = sds.getSaleList();
+		model.addAttribute("purchase_report", plist.size());
+		model.addAttribute("sale_report", slist.size());
 		return "dashboard";
 	}
 
@@ -76,17 +80,6 @@ public class DashboardController {
 	public String getSettings() {
 
 		return "settings";
-	}
-
-
-	@GetMapping("/dashboard/datewise-sale-reports")
-	public String getSaleReport() {
-		return "salereport";
-	}
-
-	@GetMapping("/dashboard/current-stock")
-	public String getCurrentStockReport() {
-		return "currentstock";
 	}
 
 }

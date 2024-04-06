@@ -56,4 +56,11 @@ public class PurchaseDetailsImpl implements PurchaseDetailService {
         return pdRepo.findAllByPurchaseMasterId(purchaseMasterId);
     }
 
+
+
+	@Override
+	public List<PurchaseDetails> getPurchaseDetailsByItemId(Long itemId) {
+		return pdRepo.findAllByItem(itemId);
+	}
+
 }

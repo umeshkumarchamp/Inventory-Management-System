@@ -8,9 +8,13 @@ import com.inventory.models.PurchaseMaster;
 public interface PurchaseDetailService {
 
 	public PurchaseDetails addNewPurchaseDetails(PurchaseDetails pd);
-    public void savePurchase(PurchaseMaster purchaseMaster, List<PurchaseDetails> purchaseDetailsList);
+
+	public void savePurchase(PurchaseMaster purchaseMaster, List<PurchaseDetails> purchaseDetailsList);
 
 	public List<PurchaseDetails> getPurchaseList();
+
+	public List<PurchaseDetails> getPurchaseDetailsByPurchaseMasterId(Long purchaseMasterId);
 	
-	public List<PurchaseDetails> getPurchaseDetailsByPurchaseMasterId(Long purchaseMasterId) ;	
+	public List<PurchaseDetails> getPurchaseDetailsByItemId(Long itemId);
+
 }

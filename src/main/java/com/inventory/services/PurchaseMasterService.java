@@ -12,4 +12,8 @@ public interface PurchaseMasterService {
 	
 	public PurchaseMaster getPurchaseMasterByInvoiceNo(Long invoiceNo);
 	
+	public List<PurchaseMaster> getPurchaseMastersByDate(String data);
+	
+	public List<PurchaseMaster> findPurchasesBetweenDates(String fromDate , String toDate);
+	
 }

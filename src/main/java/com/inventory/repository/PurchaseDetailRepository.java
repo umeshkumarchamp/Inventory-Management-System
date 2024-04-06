@@ -9,4 +9,6 @@ import com.inventory.models.PurchaseDetails;
 public interface PurchaseDetailRepository extends JpaRepository<PurchaseDetails, Long> {
 
     List<PurchaseDetails> findAllByPurchaseMasterId(Long purchaseMasterId);
+    
+    List<PurchaseDetails> findAllByItem(Long item);
 }

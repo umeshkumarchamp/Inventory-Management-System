@@ -144,76 +144,74 @@
 
 
 
+
+
 		.main-content {
+
 			flex: 1;
 			padding: 20px;
 			margin-left: 300px;
-			/* Set left margin to match sidebar width */
-			margin-top: 60px;
-			/* Adjust margin-top to accommodate navbar height */
+			margin-top: 90px;
 		}
 
-		.main-content h2 {
+		.print-section {
+			background-color: #f9f9f9;
+			border-radius: 10px;
+			padding: 30px;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+		}
+
+		h1 {
 			color: #333;
 		}
 
-		.card {
-			background-color: #fff;
-			border-radius: 10px;
-			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-			padding: 20px;
-			margin-bottom: 20px;
-		}
-
-		.card h3 {
-			margin-top: 0;
-		}
-
-		.card-content {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-		}
-
-		.card-content img {
-			max-width: 50px;
-		}
-
-		.card-content p {
-			margin: 0;
+		h2 {
 			color: #555;
 		}
 
-		.card-content span {
-			color: #333;
-			font-weight: bold;
+		h3 {
+			margin-top: 40px;
 		}
 
-		.card-link {
-			text-decoration: none;
-			/* Remove default underline */
-			color: inherit;
-			/* Inherit text color from parent */
+		.p-details ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			display: flex;
+			justify-content: space-between;
 		}
 
-		.card-link:hover {
-			text-decoration: none;
-			/* Remove underline on hover */
-			color: inherit;
-			/* Inherit text color from parent */
+
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 20px;
 		}
 
-		.card-link .card {
-			display: block;
-			/* Make the entire card area clickable */
-			transition: transform 0.2s ease-in-out;
-			/* Add a smooth transition */
+		th,
+		td {
+			border: 1px solid #ccc;
+			padding: 8px;
+			text-align: left;
 		}
 
-		.card-link .card:hover {
-			/*transform: scale(1.05);  */
-			background-color: rgb(128, 255, 255);
-			transition: 0.3s ease;
+		button {
+			padding: 10px 20px;
+			background-color: #007bff;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		button:hover {
+			background-color: #0056b3;
+		}
+
+		.print-button {
+			margin: 50px;
+			text-align: center;
 		}
 	</style>
 </head>
@@ -244,42 +242,61 @@
 				<!-- <li><a href="#" th:href="@{/dashboard/setting}">Settings</a></li> -->
 			</ul>
 		</div>
-		<!-- --------------------------- main content start ---------------------------------- -->
+
+
 		<div class="main-content">
-			<a href="/dashboard/datewise-purchase-reports" class="card-link">
-				<div class="card">
-					<h3>Purchase Reports </h3>
-					<div class="card-content">
-						<p>Total Reports :</p>
-						<span th:text="${purchase_report}">250</span>
-					</div>
-				</div>
-			</a>
+			<div class="print-section">
+				<div class="p-details">
+					<h2>Sale Invoice Details</h2>
+					<ul>
+						<li><strong>Bill No :</strong> <span th:text="${billNo}"></span></li>
+						<li><strong>Customer Name :</strong> <span th:text="${customer}"></span></li>
+						<li><strong>Date :</strong> <span th:text="${billDate}"></span></li>
 
-			<a href="/dashboard/datewise-sale-reports" class="card-link">
-				<div class="card">
-					<h3>Sale Reports</h3>
-					<div class="card-content">
-						<p>Total Reports :</p>
-						<span th:text="${sale_report}">20</span>
-					</div>
+					</ul>
 				</div>
-			</a>
-
-			<a href="/dashboard/current-stock" class="card-link">
-				<div class="card">
-					<h3>Current Stock</h3>
-					<div class="card-content">
-						<p>Total Reports :</p>
-						<span>15</span>
-					</div>
+				<div>
+					<h2>Item Details</h2>
+					<table>
+						<thead>
+							<tr>
+								<th>Item</th>
+								<th>Rate</th>
+								<th>Quantity</th>
+								<th>Amount</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- Iterate over the list of items and generate table rows -->
+							<tr th:each="item : ${items}">
+								<td th:text="${item.item}">Item</td>
+								<td th:text="${item.rate}">Rate</td>
+								<td th:text="${item.quantity}">Quantity</td>
+								<td th:text="${item.amount}">Amount</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
-			</a>
+				<div>
+					<h3>Total Amount : <span th:text="${totalAmount}"></span></h3>
+				</div>
+			</div>
+			<div class="print-button">
+				<button onclick="printPurchaseReport()">Print Invoice</button>
+			</div>
 		</div>
 
 
-		<!-- --------------------------- main content end ---------------------------------- -->
+		<script>
+			function printPurchaseReport() {
+				var printContents = document.querySelector('.print-section').innerHTML;
+				var originalContents = document.body.innerHTML;
+				document.body.innerHTML = printContents;
+				window.print();
+				document.body.innerHTML = originalContents;
+			}
 
+		</script>
 
 		<script>
 			document.addEventListener("DOMContentLoaded", function () {
@@ -304,6 +321,7 @@
 			});
 
 		</script>
+
 </body>
 
 </html>

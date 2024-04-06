@@ -29,7 +29,7 @@ public class PurchaseDetails {
 	@Column(name = "purchase_master_id")
 	private Long purchaseMasterId;
 	
-	@Column(name = "item_id")
+	@Column(name = "item")
 	private Long item;
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -119,8 +119,6 @@ public class PurchaseDetails {
 				+ purchaseMasterId + ", item=" + item + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 
-	
-	
 
 	
 	
