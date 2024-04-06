@@ -11,8 +11,8 @@ import com.inventory.repository.SupplierRepository;
 import com.inventory.services.SupplierService;
 
 @Service
-public class SupplierServiceImpl implements SupplierService{
-	
+public class SupplierServiceImpl implements SupplierService {
+
 	@Autowired
 	private SupplierRepository supRepo;
 
@@ -23,7 +23,7 @@ public class SupplierServiceImpl implements SupplierService{
 
 	@Override
 	public List<Supplier> getAllSupplier() {
-		List<Supplier> supplierList = supRepo.findAll(); 
+		List<Supplier> supplierList = supRepo.findAll();
 		return supplierList;
 	}
 
@@ -31,12 +31,41 @@ public class SupplierServiceImpl implements SupplierService{
 	public Supplier getSupplierById(Long id) {
 		// TODO Auto-generated method stub
 		Supplier supplier = null;
-		Optional<Supplier> op =  supRepo.findById(id);
-		if(op.isPresent()) {
+		Optional<Supplier> op = supRepo.findById(id);
+		if (op.isPresent()) {
 			supplier = op.get();
 			return supplier;
 		}
 		return supplier;
+	}
+
+	@Override
+	public Boolean deleteSupplierById(Long id) {
+
+		try {
+			supRepo.deleteById(id);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public Supplier updateSupplierById(Supplier sup) {
+		Optional<Supplier> op = supRepo.findById(sup.getId());
+		if(op.isPresent()) {
+			Supplier supplier = op.get(); 
+			supplier.setName(sup.getName());
+			supplier.setAddress(sup.getAddress());
+			supplier.setContact(sup.getContact());
+			supRepo.save(supplier);
+			return supplier;
+		}else {
+			System.out.println("Supplier Not Exist !");
+			return null;
+		}
+		
 	}
 
 }

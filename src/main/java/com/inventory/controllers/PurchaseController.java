@@ -56,6 +56,9 @@ public class PurchaseController {
 			pr.setInvoiceDate(pm.getDate());
 			pr.setInvoiceNo(pm.getInvoiceNo());
 			Supplier supplier = supplierService.getSupplierById(pm.getSupplierId());
+			if(supplier == null) {
+				continue;
+			}
 			pr.setSupplier(supplier.getName());
 
 			List<PurchaseDetails> pdList = pds.getPurchaseDetailsByPurchaseMasterId(pm.getId());

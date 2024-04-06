@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Dashboard</title>
+	<link rel="stylesheet" href="styles.css">
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: aliceblue;
+		}
+
+
+		.navbar {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			background-color: rgb(255, 255, 255);
+			color: #333;
+			padding: 15px 20px;
+			display: flex;
+			align-items: center;
+			/* Align items vertically */
+			justify-content: space-between;
+		}
+
+		.container {
+			display: flex;
+			margin-top: 60px;
+			/* Adjust margin-top to accommodate navbar height */
+		}
+
+
+		.navbar h1 {
+			margin: 0;
+		}
+
+		.navbar ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.navbar ul li {
+			display: inline;
+			margin-right: 60px;
+		}
+
+		.navbar ul li a {
+			color: rgb(0, 0, 0);
+			text-decoration: none;
+		}
+
+		.navbar ul li a.active {
+			font-weight: bold;
+		}
+
+		.sidebar {
+			position: fixed;
+			top: 60px;
+			/* Align sidebar with the bottom of the navbar */
+			left: 0;
+			width: 300px;
+			height: calc(100vh - 60px);
+			/* Set sidebar height to fill remaining viewport height */
+			background-color: #2c3e50;
+			display: flex;
+			flex-direction: column;
+		}
+
+
+		.sidebar ul {
+			list-style-type: none;
+			padding: 0;
+			flex-grow: 1;
+			/* Allow the list to expand to fill remaining space */
+		}
+
+		.sidebar ul li a {
+			color: #fff;
+			text-decoration: none;
+			display: block;
+			padding: 10px 0;
+			font-weight: bold;
+			padding: 20px;
+		}
+
+		.sidebar ul li a:hover {
+			background-color: #2980B9;
+		}
+
+		.sidebar ul li a.active {
+			font-weight: bold;
+		}
+
+
+		.dropdown {
+			position: relative;
+		}
+
+		.dropbtn {
+			color: #fff;
+			text-decoration: none;
+			display: block;
+			padding: 20px;
+			cursor: pointer;
+			font-weight: bold;
+		}
+
+		.dropbtn:hover,
+		.dropbtn:focus {
+			background-color: #2980B9;
+		}
+
+		.dropdown-content {
+			display: none;
+			position: absolute;
+			background-color: #34495e;
+			min-width: 300px;
+			z-index: 1;
+		}
+
+		.dropdown-content a {
+			color: #fff;
+			text-decoration: none;
+			display: block;
+			padding: 10px 20px;
+			font-weight: bold;
+			font-size: inherit;
+		}
+
+		.dropdown-content a:hover {
+			background-color: #2c3e50;
+		}
+
+		.show {
+			display: block;
+		}
+
+
+
+
+
+		.main-content {
+
+			flex: 1;
+			padding: 20px;
+			margin-left: 300px;
+			margin-top: 90px;
+		}
+
+		h1 {
+			color: #333;
+		}
+
+		h2 {
+			color: #555;
+		}
+
+		h3 {
+			margin-top: 40px;
+		}
+
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 20px;
+		}
+
+		th,
+		td {
+			border: 1px solid #ccc;
+			padding: 8px;
+			text-align: left;
+		}
+
+		button {
+			padding: 10px 20px;
+			background-color: #007bff;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		button:hover {
+			background-color: #0056b3;
+		}
+
+
+
+		.main-content {
+			flex: 1;
+			padding: 20px;
+			margin-left: 300px;
+			margin-top: 60px;
+		}
+
+		.update-form {
+			max-width: 400px;
+			margin: auto;
+			padding: 50px;
+			background-color: #ffffff;
+			border-radius: 10px;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+		}
+
+		.update-form label {
+			font-weight: bold;
+			margin-bottom: 5px;
+			display: block;
+		}
+
+		.update-form input[type="text"] {
+			width: 100%;
+			padding: 10px;
+			margin-bottom: 20px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			font-size: 16px;
+		}
+
+		.update-form button[type="submit"] {
+			display: block;
+			width: 30%;
+			padding: 10px 0;
+			background-color: #007bff;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			font-size: 16px;
+			transition: background-color 0.3s ease;
+		}
+
+		.update-form button[type="submit"]:hover {
+			background-color: #0056b3;
+		}
+	</style>
+</head>
+
+<body>
+	<nav class="navbar">
+		<h1>Inventory Dashboard</h1>
+		<ul>
+			<li><a href="#" class="active"> Admin</a></li>
+		</ul>
+	</nav>
+	<div class="container">
+		<div class="sidebar">
+			<ul>
+				<li><a href="#" th:href="@{/dashboard}" class="active-dd">Overview</a></li>
+				<li><a href="#" th:href="@{/dashboard/item}">Item Master</a></li>
+				<li><a href="#" th:href="@{/dashboard/supplier}">Supplier</a></li>
+				<li><a href="#" th:href="@{/dashboard/purchase}">Purchase</a></li>
+				<li><a href="#" th:href="@{/dashboard/sale}">Sale</a></li>
+				<li class="dropdown">
+					<div class="dropbtn">Reports</div>
+					<div class="dropdown-content">
+						<a href="#" th:href="@{/dashboard/datewise-purchase-reports}">Purchase Reports</a>
+						<a href="#" th:href="@{/dashboard/datewise-sale-reports}">Sale Reports</a>
+						<a href="#" th:href="@{/dashboard/current-stock}">Current Stock</a>
+					</div>
+				</li>
+				<!-- <li><a href="#" th:href="@{/dashboard/setting}">Settings</a></li> -->
+			</ul>
+		</div>
+
+
+		<div class="main-content">
+			<div class="update-form">
+				<form id="supplierForm" action="/api/suppliers/update" method="POST">
+					<input type="hidden" id="supplierId" th:value="${supplier.getId()}" name="id">
+					<label for="name">Supplier Name:</label><br>
+					<input type="text" id="name" th:value="${supplier.getName()}" name="name"><br>
+					<label for="contact">Contact Number:</label><br>
+					<input type="text" id="contact" th:value="${supplier.getContact()}" name="contact"><br>
+					<label for="address">Address:</label><br>
+					<input type="text" id="address" th:value="${supplier.getAddress()}" name="address"><br><br>
+					<button type="submit">Update</button>
+				</form>
+			</div>
+		</div>
+
+
+
+
+
+<!-- 		-------------------------------- JavaScript Code Start -------------------------------- -->
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				var dropdowns = document.querySelectorAll(".dropdown");
+				dropdowns.forEach(function (dropdown) {
+					var dropbtn = dropdown.querySelector(".dropbtn");
+					var dropdownContent = dropdown.querySelector(".dropdown-content");
+					dropbtn.addEventListener("click", function () {
+						dropdownContent.classList.toggle("show");
+					});
+				});
+
+				window.addEventListener("click", function (event) {
+					dropdowns.forEach(function (dropdown) {
+						var dropbtn = dropdown.querySelector(".dropbtn");
+						var dropdownContent = dropdown.querySelector(".dropdown-content");
+						if (!dropdown.contains(event.target)) {
+							dropdownContent.classList.remove("show");
+						}
+					});
+				});
+			});
+
+		</script>
+
+</body>
+
+</html>

@@ -2,89 +2,109 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Admin Login</title>
-	<link rel="stylesheet" href="styles.css">
-	<style>
-		body {
-			font-family: Arial, sans-serif;
-			background-color: #f5f5f5;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100vh;
-			margin: 0;
-		}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ecf0f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-		.login-container {
-			background-color: #fff;
-			border-radius: 10px;
-			width: 20%;
-			padding: 40px;
-			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-		}
+        .login-container {
+            background-color: #fff;
+            border-radius: 10px;
+            width: 20%;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-		h1 {
-			text-align: center;
-			margin-bottom: 30px;
-			color: #333;
-		}
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
 
-		form {
-			text-align: center;
-		}
+        form {
+            text-align: center;
+        }
 
-		.input-group {
-			margin-bottom: 20px;
-		}
+        .input-group {
+            margin-bottom: 20px;
+        }
 
-		label {
-			display: block;
-			font-weight: bold;
-			margin-bottom: 5px;
-			color: #666;
-		}
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #666;
+        }
 
-		input[type="text"],
-		input[type="password"] {
-			width: 100%;
-			padding: 10px;
-			border: 1px solid #ccc;
-			border-radius: 5px;
-		}
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
 
-		button {
-			background-color: #3498db;
-			color: #fff;
-			border: none;
-			padding: 10px 20px;
-			border-radius: 5px;
-			cursor: pointer;
-			transition: background-color 0.3s ease;
-		}
+        button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-		button:hover {
-			background-color: #2980b9;
-		}
-	</style>
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .error-message {
+            display: none; /* Initially hide the error message */
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body>
-	<div class="login-container">
-		<h1>Admin Login</h1>
-		<form>
-			<div class="input-group">
-				<label for="username">Username</label>
-				<input type="text" id="username" name="username" required>
-			</div>
-			<div class="input-group">
-				<label for="password">Password</label>
-				<input type="password" id="password" name="password" required>
-			</div>
-			<button type="submit">Login</button>
-		</form>
-	</div>
+    <div class="login-container">
+        <h1>Admin Login</h1>
+        <!-- Error message placeholder -->
+        <p id="error-message" class="error-message">Invalid username or password</p>
+
+        <form action="/login" method="post">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <script>
+        // Function to check if error parameter exists in URL and show error message accordingly
+        window.onload = function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            var error = urlParams.get('error');
+            if (error) {
+                document.getElementById('error-message').style.display = 'block';
+            }
+        };
+    </script>
 </body>
 
 </html>
