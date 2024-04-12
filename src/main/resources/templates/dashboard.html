@@ -26,6 +26,8 @@
 			align-items: center;
 			/* Align items vertically */
 			justify-content: space-between;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
 		}
 
 		.container {
@@ -61,11 +63,11 @@
 
 		.sidebar {
 			position: fixed;
-			top: 60px;
+			top: 58px;
 			/* Align sidebar with the bottom of the navbar */
 			left: 0;
 			width: 300px;
-			height: calc(100vh - 60px);
+			height: calc(100vh - 50px);
 			/* Set sidebar height to fill remaining viewport height */
 			background-color: #2c3e50;
 			display: flex;
@@ -187,6 +189,18 @@
 			color: #333;
 			font-weight: bold;
 		}
+		
+		.drop-color {
+			background-color: #2980B9 !important;
+		}
+		.drop-color a {
+		    color: #333 !important;
+		}
+		
+		.drop-color a:hover {
+		    background-color: rgb(46, 143, 209);
+		    color: #fff !important;
+		}
 	</style>
 </head>
 
@@ -194,7 +208,14 @@
 	<nav class="navbar">
 		<h1>Inventory Dashboard</h1>
 		<ul>
-			<li><a href="#" class="active">Admin</a></li>
+
+			<li class="profile-dropdown">
+				<a href="#" class="active profile-dropbtn">Admin</a>
+				<div class="dropdown-content drop-color">
+					<a href="/dashboard/profile">Profile</a>
+					<a href="/" id="logoutBtn">Logout</a>
+				</div>
+			</li>
 		</ul>
 	</nav>
 	<div class="container">
@@ -267,6 +288,33 @@
 			});
 		});
 
+	</script>
+
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			var dropdown = document.querySelector(".profile-dropdown");
+			var dropdownContent = dropdown.querySelector(".dropdown-content");
+			var logoutBtn = document.getElementById("logoutBtn");
+
+			dropdown.addEventListener("click", function (event) {
+				if (!dropdownContent.classList.contains("show")) {
+					dropdownContent.classList.add("show");
+				} else {
+					dropdownContent.classList.remove("show");
+				}
+			});
+
+			logoutBtn.addEventListener("click", function (event) {
+				//confirm("Are your sure to logout ??"); 
+			});
+
+			window.addEventListener("click", function (event) {
+				if (!dropdown.contains(event.target)) {
+					dropdownContent.classList.remove("show");
+				}
+			});
+		});
 	</script>
 
 

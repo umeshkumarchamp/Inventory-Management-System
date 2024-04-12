@@ -6,4 +6,6 @@ import com.inventory.models.Item;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
+	public Item findByItem(String item);
+	
 }

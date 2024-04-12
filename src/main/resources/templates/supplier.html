@@ -25,6 +25,8 @@
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
 		}
 
 		.container {
@@ -59,11 +61,11 @@
 
 		.sidebar {
 			position: fixed;
-			top: 60px;
+			top: 58px;
 			/* Align sidebar with the bottom of the navbar */
 			left: 0;
 			width: 300px;
-			height: calc(100vh - 60px);
+			height: calc(100vh - 50px);
 			/* Set sidebar height to fill remaining viewport height */
 			background-color: #2c3e50;
 			display: flex;
@@ -189,38 +191,9 @@
 		}
 
 
-		.product-details {
-			display: flex;
-			align-items: center;
-		}
+	
 
-		.product-info input {
-			margin-right: 10px;
-		}
-
-		.product-info>input[type="text"],
-		.product-info>input[type="number"],
-		.product-info>select {
-
-			padding: 10px;
-			border: 1px solid #ccc;
-			border-radius: 5px;
-			font-size: 16px;
-			margin-top: 5px;
-			margin-right: 10px;
-			margin-bottom: 20px;
-		}
-
-
-
-		button {
-			padding: 10px 20px;
-			background-color: #007bff;
-			color: #fff;
-			border: none;
-			border-radius: 5px;
-			cursor: pointer;
-		}
+		/*  Table List */
 
 		table {
 			width: 100%;
@@ -251,13 +224,20 @@
 			margin-right: 10px;
 			margin-left: 10px;
 			font-size: 20px;
-			/* Update icon color */
 		}
 
 		.delete-icon {
 			color: red;
 			font-size: 20px;
-			/* Delete icon color */
+		}
+
+		.alert-danger {
+			color: #721c24;
+			background-color: #f8d7da;
+			border-color: #f5c6cb;
+			padding: 8px 15px;
+			border: 1px solid transparent;
+			border-radius: .25rem;
 		}
 	</style>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -292,39 +272,58 @@
 		</div>
 
 		<div class="main-content">
-			<div class="main">
-				<h1>Supplier Master</h1>
-				<div class="form-container">
-					<form action="#" th:action="@{/dashboard/add-supplier}" method="post">
-						<input type="text" name="name" placeholder="Enter Supplier Name">
-						<input type="number" name="contact" placeholder="Enter Contact Number">
-						<input type="text" name="address" placeholder="Enter Address">
-						<br>
-						<input type="submit" value="Submit">
-					</form>
-				</div>
-
-				<div class="product-list" id="productList">
-					<h2>Product List</h2>
-					<table id="productTable">
-						<thead>
-							<tr>
-								<th>Id</th>
-								<th>Supplier Name</th>
-								<th>Contact</th>
-								<th>Address</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody id="supplierListBody">
-							<!-- Product details will be dynamically added here -->
-
-						</tbody>
-					</table>
-				</div>
-			</div>
+		    <div class="main">
+		        <h1>Supplier Master</h1>
+		        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+		            <span th:text="${errorMessage}"></span>
+		        </div>
+		        <div class="form-container">
+		            <form action="#" th:action="@{/dashboard/add-supplier}" method="post" id="phoneNumberForm">
+		                <input type="text" name="name" placeholder="Enter Supplier Name" required>
+		                <div id="phoneNumberError" style="color: red;"></div>
+		                <input type="number" name="contact" id="phoneNumber" placeholder="Enter Contact Number" maxlength="10" oninput="this.value = this.value.slice(0, 10)" required>
+		                <input type="text" name="address" placeholder="Enter Address" required>
+		                <br>
+		                <input type="submit" value="Submit">
+		            </form>
+		        </div>
+		        <!-- Supplier List -->
+		        <div class="product-list" id="productList">
+		            <h2>Supplier List</h2>
+		            <table id="productTable">
+		                <thead>
+		                    <tr>
+		                        <th>Sl.No</th>
+		                        <th>Supplier Name</th>
+		                        <th>Contact</th>
+		                        <th>Address</th>
+		                        <th>Actions</th>
+		                    </tr>
+		                </thead>
+		                <tbody id="supplierListBody">
+		                    <!-- Product details will be dynamically added here -->
+		                </tbody>
+		            </table>
+		        </div>
+		    </div>
 		</div>
-	</div>
+		</div>
+		
+		<script>
+		// Verify Contact number should be atleast 10 digits
+		document.getElementById('phoneNumberForm').addEventListener('submit', function(event) {
+		    const phoneNumber = document.getElementById('phoneNumber').value;
+		    const phoneNumberError = document.getElementById('phoneNumberError');
+		
+		    if (phoneNumber.length < 10) {
+		        phoneNumberError.textContent = 'Phone number must be at least 10 digits';
+		        event.preventDefault(); // Prevent form submission
+		    } else {
+		        phoneNumberError.textContent = ''; // Clear any previous error message
+		    }
+		});
+		</script>
+
 
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
@@ -334,9 +333,9 @@
 				.then(data => {
 					// Update the HTML table with supplier data
 					const supplierListBody = document.getElementById("supplierListBody");
-					let num = 1; 
+					let num = 1;
 					data.forEach(supplier => {
-						
+
 						const row = document.createElement("tr");
 						row.innerHTML = `
 	                        <td>${num}</td>

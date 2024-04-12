@@ -5,7 +5,6 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Dashboard</title>
-	<link rel="stylesheet" href="styles.css">
 	<style>
 		body {
 			font-family: Arial, sans-serif;
@@ -27,6 +26,8 @@
 			align-items: center;
 			/* Align items vertically */
 			justify-content: space-between;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
 		}
 
 		.container {
@@ -62,11 +63,11 @@
 
 		.sidebar {
 			position: fixed;
-			top: 60px;
+			top: 58px;
 			/* Align sidebar with the bottom of the navbar */
 			left: 0;
 			width: 300px;
-			height: calc(100vh - 60px);
+			height: calc(100vh - 50px);
 			/* Set sidebar height to fill remaining viewport height */
 			background-color: #2c3e50;
 			display: flex;
@@ -310,13 +311,26 @@
 			</table>
 		</div>
 
+
+		<script>
+			// Get current date
+			var today = new Date();
+			var dd = String(today.getDate()).padStart(2, '0');
+			var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+			var yyyy = today.getFullYear();
+
+			// Set default values for fromDate and toDate
+			document.getElementById('fromDate').value = yyyy + '-' + mm + '-' + dd;
+			document.getElementById('toDate').value = yyyy + '-' + mm + '-' + dd;
+		</script>
+
 		<script>
 			function filterReports() {
 				var fromDate = document.getElementById("fromDate").value;
 				var toDate = document.getElementById("toDate").value;
 				// Make an AJAX request to fetch reports based on the selected date
 				// Replace this with your actual AJAX request to the backend
-				fetch("/dashboard/saleReports?fromDate=" + fromDate + "&toDate="+toDate)
+				fetch("/dashboard/saleReports?fromDate=" + fromDate + "&toDate=" + toDate)
 					.then(response => response.json())
 					.then(data => {
 						// Update the table body with the filtered reports

@@ -25,6 +25,7 @@
 			padding: 15px 20px;
 			display: flex;
 			align-items: center;
+			/* Align items vertically */
 			justify-content: space-between;
 			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
@@ -63,11 +64,11 @@
 
 		.sidebar {
 			position: fixed;
-			top: 58px;
+			top: 60px;
 			/* Align sidebar with the bottom of the navbar */
 			left: 0;
 			width: 300px;
-			height: calc(100vh - 50px);
+			height: calc(100vh - 60px);
 			/* Set sidebar height to fill remaining viewport height */
 			background-color: #2c3e50;
 			display: flex;
@@ -152,64 +153,86 @@
 			margin-top: 60px;
 		}
 
-		.update-form {
-			max-width: 400px;
-			margin: auto;
-			padding: 50px;
-			background-color: #ffffff;
+		.main-content h1 {
+			color: #333;
+		}
+
+		.main {
+			background-color: #f9f9f9;
 			border-radius: 10px;
+			padding: 30px;
 			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 		}
 
-		.update-form label {
-			font-weight: bold;
-			margin-bottom: 5px;
-			display: block;
+		.form-container {
+			margin-top: 20px;
 		}
 
-		.update-form input[type="text"],
-		.update-form input[type="number"] {
-			width: 100%;
+		.form-container form input[type="text"] {
 			padding: 10px;
-			margin-bottom: 20px;
+			width: 30%;
 			border: 1px solid #ccc;
 			border-radius: 5px;
+			margin-bottom: 20px;
 			font-size: 16px;
 		}
 
-		.button-container {
-			display: flex;
-			justify-content: space-between
-		}
-
-		.update-button {
+		.form-container form input[type="submit"] {
 			background-color: #4CAF50;
-			/* Green */
-			border: none;
 			color: white;
 			padding: 10px 20px;
-			text-align: center;
-			text-decoration: none;
-			display: inline-block;
-			font-size: 16px;
-			margin-right: 10px;
-			/* Adjust as needed */
-			cursor: pointer;
+			border: none;
 			border-radius: 5px;
+			cursor: pointer;
+			font-size: 16px;
 		}
 
-		.cancel-button {
-			background-color: #f44336;
-			/* Red */
-			border: none;
-			color: white;
-			padding: 10px 20px;
-			text-align: center;
-			text-decoration: none;
-			display: inline-block;
-			font-size: 16px;
-			cursor: pointer;
-			border-radius: 5px;
+		.form-container form input[type="submit"]:hover {
+			background-color: #45a049;
+		}
+
+		label {
+			font-size: 18px;
+		}
+
+		/*  Table List */
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+		}
+
+		th,
+		td {
+			border: 1px solid #ddd;
+			padding: 10px;
+			text-align: left;
+		}
+
+		th {
+			background-color: #2c3e50;
+			color: #f9f9f9
+		}
+
+		.btn-submit {
+			background-color: #4caf50;
+		}
+
+
+
+		.update-icon {
+			color: blue;
+			margin-right: 10px;
+			margin-left: 10px;
+			font-size: 20px;
+			/* Update icon color */
+		}
+
+		.delete-icon {
+			color: red;
+			font-size: 20px;
+			/* Delete icon color */
 		}
 
 		.alert-danger {
@@ -221,6 +244,8 @@
 			border-radius: .25rem;
 		}
 	</style>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 </head>
 
 <body>
@@ -250,54 +275,11 @@
 			</ul>
 		</div>
 
-
 		<div class="main-content">
-			<div class="update-form">
-				<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
-					<span th:text="${errorMessage}"></span>
-				</div><br>
-				<form id="supplierForm" action="/api/suppliers/update" method="POST" >
-					<input type="hidden" id="supplierId" th:value="${supplier.getId()}" name="id" required>
-					<label for="name">Supplier Name:</label><br>
-					<input type="text" id="name" th:value="${supplier.getName()}" name="name" required><br>
-					<label for="contact">Contact Number:</label><br>
-					<div id="phoneNumberError" style="color: red;"></div>
 
-					<input type="number" id="contact" th:value="${supplier.getContact()}" maxlength="10"
-						oninput="this.value = this.value.slice(0, 10)" name="contact" required><br>
-					<label for="address">Address:</label><br>
-					<input type="text" id="address" th:value="${supplier.getAddress()}" name="address" required><br><br>
-					<div class="button-container">
-						<a href="/dashboard/supplier" class="cancel-button">Cancel</a>
-						<button type="submit" class="update-button">Update</button>
-
-					</div>
-				</form>
-			</div>
 		</div>
 
 
-
-
-
-		<!-- 		-------------------------------- JavaScript Code Start -------------------------------- -->
-
-		<script>
-			// Verify Contact number should be atleast 10 digits
-			document.getElementById('supplierForm').addEventListener('submit', function (event) {
-				const phoneNumber = document.getElementById('contact').value;
-				const phoneNumberError = document.getElementById('phoneNumberError');
-
-				if (phoneNumber.length < 10) {
-					phoneNumberError.textContent = 'Phone number must be at least 10 digits';
-					event.preventDefault(); 
-				} else {
-					phoneNumberError.textContent = ''; 
-				}
-			});
-		</script>
-		
-		
 		<script>
 			document.addEventListener("DOMContentLoaded", function () {
 				var dropdowns = document.querySelectorAll(".dropdown");
@@ -321,7 +303,6 @@
 			});
 
 		</script>
-
 </body>
 
 </html>

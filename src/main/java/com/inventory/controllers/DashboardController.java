@@ -61,6 +61,7 @@ public class DashboardController {
 	public String getPurchase(Model model) {
 		List<Supplier> suppliers = supService.getAllSupplier();
 		List<Item> items = itemService.getAllItems();
+		
 		model.addAttribute("suppliers", suppliers);
 		model.addAttribute("items", items);
 		return "purchase";
@@ -89,57 +90,9 @@ public class DashboardController {
 		return "settings";
 	}
 
-	
-	// =================================================== Supplier Controller =================================================================
-	
-	@PostMapping("/dashboard/add-supplier")
-    public String saveEmployee(@RequestParam("name") String name,
-                               @RequestParam("contact") Long contact,
-                               @RequestParam("address") String address) {
-        Supplier sup = new Supplier();
-        sup.setName(name);
-        sup.setContact(contact);
-        sup.setAddress(address);
-        Date currentDate = new Date();
-        sup.setCreatedAt(currentDate); 
-        sup.setUpdatedAt(currentDate);
-        supService.addNewSupplier(sup);
-        
-        return "redirect:/dashboard/supplier"; 
-    }
-	
-	@GetMapping("/dashboard/api/suppliers/delete")
-	public String deleteSuppliers(@RequestParam Long id) {
-		
-		System.out.println(id);
-		supService.deleteSupplierById(id);
-		return "redirect:/dashboard/supplier";
+	@GetMapping("/dashboard/profile")
+	public String getProfile() {
+		return "profile";
 	}
-	
-	@GetMapping("/dashboard/api/suppliers/update")
-	public String updateSupplierForm(@RequestParam Long id,Model model) {
-		
-		System.out.println(id);
-		
-		Supplier sup = supService.getSupplierById(id);
-	    model.addAttribute("supplier", sup);
 
-		return "update-supplier";
-	}
-	
-	@PostMapping("/api/suppliers/update")
-	public String updateSupplier(@RequestParam("id")Long id,
-								 @RequestParam("name")String name,
-								 @RequestParam("contact")Long contact,
-								 @RequestParam("address")String address){
-		
-		Supplier sup = new Supplier(); 
-		sup.setId(id);
-		sup.setName(name);
-		sup.setAddress(address);
-		sup.setContact(contact);
-		Supplier supplier = supService.updateSupplierById(sup);
-		System.out.println(supplier );
-		return "supplier";
-	}
 }

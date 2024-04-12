@@ -27,6 +27,8 @@
 			align-items: center;
 			/* Align items vertically */
 			justify-content: space-between;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
 		}
 
 		.container {
@@ -62,11 +64,11 @@
 
 		.sidebar {
 			position: fixed;
-			top: 60px;
+			top: 58px;
 			/* Align sidebar with the bottom of the navbar */
 			left: 0;
 			width: 300px;
-			height: calc(100vh - 60px);
+			height: calc(100vh - 50px);
 			/* Set sidebar height to fill remaining viewport height */
 			background-color: #2c3e50;
 			display: flex;
@@ -186,7 +188,7 @@
 		.form-group input[type="number"],
 		.form-group select {
 			width: 25%;
-			padding: 10px;
+			padding: 8px 16px;
 			border: 1px solid #ccc;
 			border-radius: 5px;
 			font-size: 16px;
@@ -207,7 +209,7 @@
 		.product-info>input[type="number"],
 		.product-info>select {
 
-			padding: 10px;
+			padding: 8px 16px;
 			border: 1px solid #ccc;
 			border-radius: 5px;
 			font-size: 16px;
@@ -218,7 +220,8 @@
 
 
 
-		button {
+		.product-info button,
+		.btn-submit {
 			padding: 10px 20px;
 			background-color: #007bff;
 			color: #fff;
@@ -261,7 +264,19 @@
 		}
 
 		/** End Main-Content */
+		.delete-icon {
+			color: red;
+			font-size: 18px;
+			cursor: pointer;
+		}
+
+		td button {
+			border: none;
+		}
 	</style>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 </head>
 
 <body>
@@ -293,15 +308,19 @@
 		<div class="main-content">
 			<div class="purchase-form">
 				<h1>Sale Master</h1>
-				<form action="/dashboard/saveSale" method="post" th:object="${saleRequest}" id="purchaseForm"
-					onsubmit="handleSubmit(event)">
+				<form action="/dashboard/saveSale" method="post" th:object="${saleRequest}" id="purchaseForm">
 					<div class="form-group">
 						<label for="customerName">Customer Name :</label>
-						<input type="text" id="customerName" name="saleMaster.customerName" required>
+						<input type="text" id="customerName" name="saleMaster.customerName"
+							placeholder="Enter Customer Name" required>
 					</div>
+					<div id="phoneNumberError" style="color: red;"></div>
 					<div class="form-group">
 						<label for="contactNumber">Contact Number :</label>
-						<input type="number" id="contactNo" name="saleMaster.contactNo" required>
+						<input type="number" name="saleMaster.contactNo" id="phoneNumber"
+							placeholder="Enter Contact Number" maxlength="10"
+							oninput="this.value = this.value.slice(0, 10)" required>
+
 					</div>
 					<div class="form-group">
 						<label for="contactNumber">Bill Number : </label>
@@ -309,15 +328,23 @@
 							required>
 					</div>
 					<h2>Add Products</h2>
+					<div id="itemError" style="color: red;"></div>
+
+					<div id="errorMessage" style="color: red;"></div>
+
 					<div class="product-details">
 						<div class="product-info">
-							<select id="productName">
-								<option value="">Select Product</option>
+							<select id="productName" onchange="updateRate()">
+								<option value="" disabled selected>Select Product</option>
 								<!-- Populate items from model attribute -->
 								<option th:each="item : ${items}" th:value="${item.id}" th:text="${item.item}">
 								</option>
 							</select>
-							<input type="number" id="rate" placeholder="Rate">
+							<select id="rate">
+								<option disabled selected id="disable-rate">Select Rate</option>
+
+								<!-- Options for rate will be dynamically populated based on the selected product -->
+							</select>
 							<input type="number" id="quantity" placeholder="Quantity">
 							<button type="button" onclick="addProduct()">Add Product</button>
 						</div>
@@ -339,7 +366,6 @@
 							</tbody>
 						</table>
 						<div class="total-section">
-							<button type="button" onclick="calculateGrandTotal()">Calculate Grand Total</button>
 							<p id="grandTotal"></p>
 						</div>
 					</div>
@@ -349,8 +375,95 @@
 		</div>
 
 		<script>
+			document.getElementById('purchaseForm').addEventListener('submit', function (event) {
+				// Prevent form submission if no items are added
+				if (!JSON.parse(sessionStorage.getItem("addedProducts")) || JSON.parse(sessionStorage.getItem("addedProducts")).length === 0) {
+					document.getElementById("itemError").textContent = "You have to add at least one item."; // Display error message
+					event.preventDefault(); // Prevent form submission
+				} else {
+					document.getElementById("itemError").textContent = ""; // Clear error message
+				}
 
+				// Verify Contact number should be atleast 10 digits
+				const phoneNumber = document.getElementById('phoneNumber').value;
+				const phoneNumberError = document.getElementById('phoneNumberError');
+
+				if (phoneNumber.length < 10) {
+					phoneNumberError.textContent = 'Phone number must be at least 10 digits';
+					event.preventDefault(); // Prevent form submission
+				} else {
+					phoneNumberError.textContent = ''; // Clear any previous error message
+				}
+
+				// Remove 'required' attribute from product details fields
+				document.getElementById("productName").removeAttribute("required");
+				document.getElementById("rate").removeAttribute("required");
+				document.getElementById("quantity").removeAttribute("required");
+
+				// Clear sessionStorage when form is submitted
+				sessionStorage.removeItem("addedProducts");
+			});
+		</script>
+
+		<script>
+
+			function updateRate() {
+				var productId = document.getElementById("productName").value;
+				if (!productId) return; // If no product is selected, do nothing
+
+				// Clear input fields after adding the product
+				var rateDropdown = document.getElementById("rate");
+
+				// Find all options with id "rate-list" and remove them
+				var options = rateDropdown.querySelectorAll("#rate-list");
+				options.forEach(function (option) {
+					option.remove();
+				});
+				rateDropdown.value = "Select Rate";
+
+				// Make an AJAX request to fetch the rate for the selected product
+				fetch('/api/getRate?productId=' + productId)
+					.then(response => response.json())
+					.then(data => {
+						// Update the rate dropdown menu options
+						var rateDropdown = document.getElementById("rate");
+						//rateDropdown.innerHTML = ""; // Clear existing options
+						data.forEach(function (purchaseDetails) {
+							var option = document.createElement("option");
+							option.value = purchaseDetails.rate;
+							option.text = purchaseDetails.rate;
+							option.id = "rate-list";
+							rateDropdown.appendChild(option);
+						});
+					})
+					.catch(error => console.error('Error:', error));
+			}
+
+
+			// Adding products in the list 
 			function addProduct() {
+				let p = document.getElementById("productName").value;
+				let r = document.getElementById("rate").value.trim();
+				let q = document.getElementById("quantity").value.trim();
+				let errorMessage = document.getElementById("errorMessage");
+
+				// Check if any of the fields are empty
+				if (p.trim() === "" || r === "" || q === "") {
+					errorMessage.textContent = "Please fill in all product details.";
+					return;
+				}
+
+				// Clear error message if all fields are filled
+				errorMessage.textContent = "";
+
+				// Check if rate is selected
+				if (r === "Select Rate") {
+					errorMessage.textContent = "Please select a rate."; // Display rate error message
+					return;
+				} else {
+					errorMessage.textContent = ""; // Clear rate error message
+				}
+
 				let productId = document.getElementById("productName").value;
 				let rate = parseFloat(document.getElementById("rate").value);
 				let quantity = parseInt(document.getElementById("quantity").value);
@@ -370,8 +483,21 @@
 				// Retrieve existing products from sessionStorage or initialize an empty array
 				let existingProducts = JSON.parse(sessionStorage.getItem("addedProducts")) || [];
 
-				// Add the new product to the array
-				existingProducts.push(product);
+
+				// Check if a product with the same name already exists
+				let existingProductIndex = existingProducts.findIndex(product => product.name === productName);
+
+				if (existingProductIndex !== -1) {
+					// If product already exists, update its rate, quantity, and total
+					existingProducts[existingProductIndex].rate = rate;
+					existingProducts[existingProductIndex].quantity = quantity;
+					existingProducts[existingProductIndex].total = total;
+				} else {
+					// Add the new product to the array
+					existingProducts.push(product);
+				}
+
+
 
 				// Store the updated products array in sessionStorage
 				sessionStorage.setItem("addedProducts", JSON.stringify(existingProducts));
@@ -380,11 +506,27 @@
 				updateProductList();
 
 				// Clear input fields after adding the product
-				document.getElementById("rate").value = "";
+				var rateDropdown = document.getElementById("rate");
+
+				// Find all options with id "rate-list" and remove them
+				var options = rateDropdown.querySelectorAll("#rate-list");
+				options.forEach(function (option) {
+					option.remove();
+				});
+				rateDropdown.value = "Select Rate";
 				document.getElementById("quantity").value = "";
 				document.getElementById("productName").value = "";
 
 				console.log(sessionStorage.getItem("addedProducts"));
+
+
+				if (!JSON.parse(sessionStorage.getItem("addedProducts")) || JSON.parse(sessionStorage.getItem("addedProducts")).length === 0) {
+					document.getElementById("itemError").textContent = "You have to add at least one item."; 
+					event.preventDefault(); 
+				} else {
+					document.getElementById("itemError").textContent = ""; // Clear error message
+				}
+
 			}
 
 			// Function to update product list displayed on the page
@@ -404,7 +546,7 @@
 		                <td>${product.rate}</td>
 		                <td>${product.quantity}</td>
 		                <td>${product.total}</td>
-						<td><button type="button" onclick="removeProduct(${index})">Remove</button></td>
+						<td><button type="button" onclick="removeProduct(${index})"><i class="fas delete-icon fa-trash-alt"></button></td>
 
 		            `;
 
@@ -448,31 +590,52 @@
 			}
 
 			// Call updateProductList function when the page loads to display any previously added products
-			window.onload = updateProductList;
+			window.onload = function () {
+				// Call updateProductList function when the page loads to display any previously added products
+				updateProductList();
 
+				// Check if sessionStorage already contains added products, if not, initialize it
+				if (!sessionStorage.getItem("addedProducts")) {
+					sessionStorage.setItem("addedProducts", "[]");
+				}
+			};
+
+			/*
 			function handleSubmit(event) {
-				event.preventDefault();
+				// Remove 'required' attribute from product details fields
+				document.getElementById("productName").removeAttribute("required");
+				document.getElementById("rate").removeAttribute("required");
+				document.getElementById("quantity").removeAttribute("required");
 
-				let form = document.getElementById("purchaseForm");
-				let formData = new FormData(form);
+				// Your existing handleSubmit function
+				// ...
 
-				fetch(form.action, {
-					method: form.method,
-					body: formData
-				})
-					.then(response => {
-						if (response.ok) {
-							sessionStorage.removeItem("addedProducts");
-							console.log("Form submitted successfully!");
-							// Redirect to dashboard
-							window.location.href = "/dashboard";
-						} else {
-							console.error("Form submission failed!");
-						}
-					})
-					.catch(error => {
-						console.error("Error occurred while submitting the form:", error);
-					});
+				// Clear sessionStorage when form is submitted
+				sessionStorage.removeItem("addedProducts");
+			}
+			
+			*/
+
+			// Clear sessionStorage when user navigates away from the page
+			window.onbeforeunload = function () {
+				sessionStorage.removeItem("addedProducts");
+			};
+
+
+
+			// Function to remove a product row from the table
+			function removeProduct(index) {
+				let rowToRemove = document.getElementById(`product_${index}`);
+				rowToRemove.parentNode.removeChild(rowToRemove);
+
+				let addedProducts = JSON.parse(sessionStorage.getItem("addedProducts")) || [];
+
+				addedProducts.splice(index, 1);
+
+				sessionStorage.setItem("addedProducts", JSON.stringify(addedProducts));
+
+				updateProductList();
+
 			}
 
 		</script>
@@ -502,26 +665,7 @@
 
 		</script>
 
-		<script>
-			// Function to remove a product row from the table
-			function removeProduct(index) {
-				// Remove the row from the table
-				let rowToRemove = document.getElementById(`product_${index}`);
-				rowToRemove.parentNode.removeChild(rowToRemove);
 
-				// Retrieve added products from sessionStorage
-				let addedProducts = JSON.parse(sessionStorage.getItem("addedProducts")) || [];
-
-				// Remove the product at the specified index from the array
-				addedProducts.splice(index, 1);
-
-				// Store the updated products array in sessionStorage
-				sessionStorage.setItem("addedProducts", JSON.stringify(addedProducts));
-
-				// Update the product list displayed on the page
-				updateProductList();
-			}
-		</script>
 
 </body>
 

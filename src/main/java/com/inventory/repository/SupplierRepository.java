@@ -6,4 +6,5 @@ import com.inventory.models.Supplier;
 
 public interface SupplierRepository extends JpaRepository<Supplier, Long>{
 
+	public Supplier findSupplierByContact(Long contact);
 }

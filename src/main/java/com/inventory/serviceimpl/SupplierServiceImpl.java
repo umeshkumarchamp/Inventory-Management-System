@@ -59,6 +59,7 @@ public class SupplierServiceImpl implements SupplierService {
 			supplier.setName(sup.getName());
 			supplier.setAddress(sup.getAddress());
 			supplier.setContact(sup.getContact());
+			supplier.setUpdatedAt(sup.getUpdatedAt());
 			supRepo.save(supplier);
 			return supplier;
 		}else {
@@ -66,6 +67,12 @@ public class SupplierServiceImpl implements SupplierService {
 			return null;
 		}
 		
+	}
+
+	@Override
+	public Supplier getSupplierByContact(Long contactNo) {
+		// TODO Auto-generated method stub 
+		return supRepo.findSupplierByContact(contactNo);
 	}
 
 }

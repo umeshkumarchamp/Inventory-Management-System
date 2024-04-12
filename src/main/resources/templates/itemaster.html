@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
@@ -27,6 +27,8 @@
 			align-items: center;
 			/* Align items vertically */
 			justify-content: space-between;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
 		}
 
 		.container {
@@ -62,11 +64,11 @@
 
 		.sidebar {
 			position: fixed;
-			top: 60px;
+			top: 58px;
 			/* Align sidebar with the bottom of the navbar */
 			left: 0;
 			width: 300px;
-			height: calc(100vh - 60px);
+			height: calc(100vh - 50px);
 			/* Set sidebar height to fill remaining viewport height */
 			background-color: #2c3e50;
 			display: flex;
@@ -188,10 +190,62 @@
 		.form-container form input[type="submit"]:hover {
 			background-color: #45a049;
 		}
-		label{
+
+		label {
 			font-size: 18px;
 		}
+
+		/*  Table List */
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+		}
+
+		th,
+		td {
+			border: 1px solid #ddd;
+			padding: 10px;
+			text-align: left;
+		}
+
+		th {
+			background-color: #2c3e50;
+			color: #f9f9f9
+		}
+
+		.btn-submit {
+			background-color: #4caf50;
+		}
+
+
+
+		.update-icon {
+			color: blue;
+			margin-right: 10px;
+			margin-left: 10px;
+			font-size: 20px;
+			/* Update icon color */
+		}
+
+		.delete-icon {
+			color: red;
+			font-size: 20px;
+			/* Delete icon color */
+		}
+
+		.alert-danger {
+			color: #721c24;
+			background-color: #f8d7da;
+			border-color: #f5c6cb;
+			padding: 8px 15px;
+			border: 1px solid transparent;
+			border-radius: .25rem;
+		}
 	</style>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 </head>
 
 <body>
@@ -224,18 +278,71 @@
 		<div class="main-content">
 			<div class="main">
 				<h1>Item Master</h1>
+				<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+					<span th:text="${errorMessage}"></span>
+				</div>
 				<div class="form-container">
 					<form action="#" th:action="@{/dashboard/add-item}" method="post">
-						<input type="text" name="item_name" placeholder="Enter Item Name" >
+						<input type="text" name="item_name" placeholder="Enter Item Name" required>
+						
 						<br>
 						<input type="submit" value="Submit">
 					</form>
+				</div>
+
+				<!-- Item List  -->
+				<div class="product-list" id="productList">
+					<h2>Item List</h2>
+					<table id="productTable">
+						<thead>
+							<tr>
+								<th>Sl.No</th>
+								<th>Item Name</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody id="supplierListBody">
+							<!-- Product details will be dynamically added here -->
+
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
 	</div>
 
 
+	<!--   Show Item List -->
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			// Fetch supplier data from backend
+			fetch("/api/items")
+				.then(response => response.json())
+				.then(data => {
+					// Update the HTML table with supplier data
+					const supplierListBody = document.getElementById("supplierListBody");
+					let num = 1;
+					data.forEach(items => {
+
+						const row = document.createElement("tr");
+						row.innerHTML = `
+		                        <td>${num}</td>
+		                        <td>${items.item}</td>
+								<td>
+									<!-- Update icon -->
+									<a href="api/item/update?id=${items.id}" title="Update"><i class="fas update-icon fa-edit"></i></a>
+									<!-- Delete icon -->
+									<a href="api/item/delete?id=${items.id}" title="Delete"><i class="fas delete-icon fa-trash-alt"></i></a>
+								</td>
+								
+		                    `;
+						num++;
+						supplierListBody.appendChild(row);
+					});
+				})
+				.catch(error => console.error("Error fetching suppliers:", error));
+		});
+	</script>
 
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {

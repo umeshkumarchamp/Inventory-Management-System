@@ -15,4 +15,6 @@ public interface SupplierService {
 	public Boolean deleteSupplierById(Long id);
 	
 	public Supplier updateSupplierById(Supplier sup);
+	
+	public Supplier getSupplierByContact(Long contactNo);
 }

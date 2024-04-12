@@ -11,12 +11,14 @@ import java.util.UUID;
 import org.apache.catalina.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.inventory.models.Item;
 import com.inventory.models.PurchaseDetailFormater;
@@ -26,11 +28,13 @@ import com.inventory.models.PurchaseRequest;
 import com.inventory.models.SaleDetails;
 import com.inventory.models.SaleMaster;
 import com.inventory.models.SaleRequest;
+import com.inventory.models.Supplier;
 import com.inventory.services.ItemService;
 import com.inventory.services.PurchaseDetailService;
 import com.inventory.services.PurchaseMasterService;
 import com.inventory.services.SaleDetailService;
 import com.inventory.services.SaleMasterService;
+import com.inventory.services.SupplierService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -42,6 +46,9 @@ public class MasterController {
 
 	@Autowired
 	private PurchaseMasterService pms;
+	
+	@Autowired
+	private SupplierService supService;
 
 	@Autowired
 	private ItemService itemService;
@@ -115,15 +122,23 @@ public class MasterController {
 		return "redirect:/dashboard";
 	}
 
+	/**
+	 * Generates a random number between 10000000 and 99999999
+	 * @return
+	 */
 	private String generateRandomBillNumber() {
 		Random random = new Random();
-	    int randomNumber = random.nextInt(90000000) + 10000000; // Generates a random number between 10000000 and 99999999
+	    int randomNumber = random.nextInt(90000000) + 10000000;
 	    return String.valueOf(randomNumber);
 	}
 	
+	/**
+	 * Check if the invoice number exists in the database
+	 * @param invoiceNo
+	 * @return
+	 */
     @GetMapping("/dashboard/checkInvoiceNo")
     public boolean checkInvoiceNo(@RequestParam("invoiceNo") Long invoiceNo) {
-        // Check if the invoice number exists in the database
         PurchaseMaster pm = pms.getPurchaseMasterByInvoiceNo(invoiceNo);
         if(pm!=null) {
         	return true;
@@ -131,6 +146,85 @@ public class MasterController {
         	return false;
         }
     }
+    
+	// =================================================== Supplier Controller =================================================================
+	
+	@PostMapping("/dashboard/add-supplier")
+    public String saveEmployee(@RequestParam("name") String name,
+                               @RequestParam("contact") Long contact,
+                               @RequestParam("address") String address,
+                               RedirectAttributes redirectAttributes) {
+        Supplier sup = new Supplier();
+        sup.setName(name);
+        sup.setContact(contact);
+        sup.setAddress(address);
+        Date currentDate = new Date();
+        sup.setCreatedAt(currentDate); 
+        sup.setUpdatedAt(currentDate);
+        
+        
+        Supplier existingSupplier = supService.getSupplierByContact(contact);
+        if (existingSupplier != null) {
+            // Supplier with the same contact already exists
+            redirectAttributes.addFlashAttribute("errorMessage", "Contact number already exists.");
+            return "redirect:/dashboard/supplier";
+        } else {
+            supService.addNewSupplier(sup);
+            return "redirect:/dashboard/supplier";
+        }
+    }
+	
+	@GetMapping("/dashboard/api/suppliers/delete")
+	public String deleteSuppliers(@RequestParam Long id) {
+		
+		System.out.println(id);
+		supService.deleteSupplierById(id);
+		return "redirect:/dashboard/supplier";
+	}
+	
+	@GetMapping("/dashboard/api/suppliers/update")
+	public String updateSupplierForm(@RequestParam Long id,Model model) {
+		
+		System.out.println(id);
+		
+		Supplier sup = supService.getSupplierById(id);
+	    model.addAttribute("supplier", sup);
+
+		return "update-supplier";
+	}
+	
+	@PostMapping("/api/suppliers/update")
+	public String updateSupplier(@RequestParam("id")Long id,
+								 @RequestParam("name")String name,
+								 @RequestParam("contact")Long contact,
+								 @RequestParam("address")String address,
+								 RedirectAttributes redirectAttributes){
+		
+		Supplier sup = new Supplier(); 
+		sup.setId(id);
+		sup.setName(name);
+		sup.setAddress(address);
+		sup.setContact(contact);
+		sup.setUpdatedAt(new Date());
+		
+		Supplier existingSupplier = supService.getSupplierByContact(contact);
+		System.out.println(existingSupplier);
+		
+        if (existingSupplier != null && existingSupplier.getId() != id) {
+//        	System.out.println("OK1");
+//        	System.out.println(8/0);
+            // Supplier with the same contact already exists
+            redirectAttributes.addFlashAttribute("errorMessage", "Contact number already exists.");
+            return "redirect:/dashboard/api/suppliers/update?id=" + id;
+        } else {
+//        	System.out.println("OK2");
+//        	System.out.println(9/0);
+        	Supplier supplier = supService.updateSupplierById(sup);
+    		System.out.println(supplier );
+    		return "redirect:/dashboard/supplier";
+		
+        }
+	}
 
 
 

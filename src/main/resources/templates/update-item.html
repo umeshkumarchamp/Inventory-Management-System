@@ -145,6 +145,43 @@
 
 
 
+
+
+		.main-content {
+
+			flex: 1;
+			padding: 20px;
+			margin-left: 300px;
+			margin-top: 90px;
+		}
+
+		h1 {
+			color: #333;
+		}
+
+		h2 {
+			color: #555;
+		}
+
+		h3 {
+			margin-top: 40px;
+		}
+
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 20px;
+		}
+
+		th,
+		td {
+			border: 1px solid #ccc;
+			padding: 8px;
+			text-align: left;
+		}
+
+
 		.main-content {
 			flex: 1;
 			padding: 20px;
@@ -167,8 +204,7 @@
 			display: block;
 		}
 
-		.update-form input[type="text"],
-		.update-form input[type="number"] {
+		.update-form input[type="text"] {
 			width: 100%;
 			padding: 10px;
 			margin-bottom: 20px;
@@ -196,6 +232,10 @@
 			/* Adjust as needed */
 			cursor: pointer;
 			border-radius: 5px;
+		}
+
+		.update-button:hover {
+			background-color: #45a049;
 		}
 
 		.cancel-button {
@@ -252,26 +292,21 @@
 
 
 		<div class="main-content">
+
 			<div class="update-form">
 				<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
 					<span th:text="${errorMessage}"></span>
 				</div><br>
-				<form id="supplierForm" action="/api/suppliers/update" method="POST" >
-					<input type="hidden" id="supplierId" th:value="${supplier.getId()}" name="id" required>
-					<label for="name">Supplier Name:</label><br>
-					<input type="text" id="name" th:value="${supplier.getName()}" name="name" required><br>
-					<label for="contact">Contact Number:</label><br>
-					<div id="phoneNumberError" style="color: red;"></div>
+				<form id="supplierForm" action="/api/item/update" method="POST">
+					<input type="hidden" id="supplierId" th:value="${item.getId()}" name="id">
+					<label for="name">Item Name:</label><br>
+					<input type="text" id="name" th:value="${item.getItem()}" name="item" required><br><br>
 
-					<input type="number" id="contact" th:value="${supplier.getContact()}" maxlength="10"
-						oninput="this.value = this.value.slice(0, 10)" name="contact" required><br>
-					<label for="address">Address:</label><br>
-					<input type="text" id="address" th:value="${supplier.getAddress()}" name="address" required><br><br>
 					<div class="button-container">
-						<a href="/dashboard/supplier" class="cancel-button">Cancel</a>
+						<a href="/dashboard/item" class="cancel-button">Cancel</a>
 						<button type="submit" class="update-button">Update</button>
-
 					</div>
+
 				</form>
 			</div>
 		</div>
@@ -281,23 +316,6 @@
 
 
 		<!-- 		-------------------------------- JavaScript Code Start -------------------------------- -->
-
-		<script>
-			// Verify Contact number should be atleast 10 digits
-			document.getElementById('supplierForm').addEventListener('submit', function (event) {
-				const phoneNumber = document.getElementById('contact').value;
-				const phoneNumberError = document.getElementById('phoneNumberError');
-
-				if (phoneNumber.length < 10) {
-					phoneNumberError.textContent = 'Phone number must be at least 10 digits';
-					event.preventDefault(); 
-				} else {
-					phoneNumberError.textContent = ''; 
-				}
-			});
-		</script>
-		
-		
 		<script>
 			document.addEventListener("DOMContentLoaded", function () {
 				var dropdowns = document.querySelectorAll(".dropdown");

@@ -10,18 +10,31 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "suppliers")
 public class Supplier {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id; 
-	private String name; 
-	private Long contact; 
+	private Long id;
+
+	@NotBlank(message = "Supplier name is required")
+	private String name;
+
+	@Column(name = "contact", unique = true)
+	@NotNull(message = "Contact is required")
+	@Min(value = 1000000000L, message = "Contact number must be at least 10 digits")
+	@Max(value = 9999999999L, message = "Contact number cannot exceed 10 digits")
+	private Long contact;
+
+	@NotBlank(message = "Address is required")
 	private String address;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_at", nullable = false, updatable = false)
 	private Date createdAt;
@@ -97,8 +110,5 @@ public class Supplier {
 		return "Supplier [id=" + id + ", name=" + name + ", contact=" + contact + ", address=" + address
 				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
-	
-	
-	
-	
+
 }

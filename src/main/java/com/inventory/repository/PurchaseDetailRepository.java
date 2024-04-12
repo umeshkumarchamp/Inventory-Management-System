@@ -11,4 +11,6 @@ public interface PurchaseDetailRepository extends JpaRepository<PurchaseDetails,
     List<PurchaseDetails> findAllByPurchaseMasterId(Long purchaseMasterId);
     
     List<PurchaseDetails> findAllByItem(Long item);
+    
+    
 }
